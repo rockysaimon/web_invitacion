@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para mi novia</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0e68c; /* Fondo color amarillo claro */
+            text-align: center;
+        }
+        .container {
+            max-width: 390px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        p {
+            font-size: 16px;
+            color: #666;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #ff69b4; /* Color rosa */
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #ff1493; /* Color rosa más oscuro */
+        }
+        .hidden {
+            display: none;
+        }
+        .error {
+            color: red;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 300px;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        ul {
+            list-style-type: none; /* Quita los puntos de los elementos li */
+            font-size: 16px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="question-container">
+        <h1>Clave para ingresar</h1>
+        <p>¿Cómo se dice "te amo mucho" en nuestro lenguaje?</p>
+        <input type="text" id="answer" placeholder="Respuesta">
+        <button class="button" onclick="checkAnswer()">Enviar</button>
+        <p id="error-message" class="error hidden">Respuesta incorrecta, intenta de nuevo.</p>
+    </div>
+
+    <div class="container hidden" id="main-content">
+        <h1>¿Estás lista para nuestra cita?</h1>
+        <p>Necesitas un par de cosas antes de ir:</p>
+        <ul>
+            <li>Un buen abrigo</li>
+            <li>Las mascarillas</li>
+            <li>Buenos juegos de mesa</li>
+            <li>Ropa de cambio</li>
+            <li>Ganas de disfrutar nuestro pequeño momento de amor</li>
+        </ul>
+        <canvas id="flowers" width="390" height="250"></canvas>
+        <p>¿Te gustaría pasar este finde conmigo?</p>
+        <button class="button" onclick="accept()">Sí</button>
+        <button class="button" onclick="decline()">No</button>
+        <p id="decline-message" class="hidden">No seas sapita negrita jajaja</p>
+    </div>
+
+    <div id="accept-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>Mañana a las 4 salimos, el lugar es secreto, pero el motivo no</p>
+        </div>
+    </div>
+
+    <script>
+        function checkAnswer() {
+            const answer = document.getElementById('answer').value;
+            const errorMessage = document.getElementById('error-message');
+            if (answer === '135') {
+                document.getElementById('question-container').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+            } else {
+                errorMessage.classList.remove('hidden');
+            }
+        }
+
+        function drawFlowers() {
+            const canvas = document.getElementById('flowers');
+            const ctx = canvas.getContext('2d');
+            const flowerCount = 200;
+
+            function drawPetal(x, y, angle, color) {
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.ellipse(x, y, 5, 10, angle, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+
+            function drawSunflower(x, y) {
+                for (let i = 0; i < 30; i++) {
+                    const angle = (i * 2 * Math.PI) / 30;
+                    drawPetal(x + Math.cos(angle) * 10, y + Math.sin(angle) * 10, angle, 'yellow');
+                }
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                ctx.fillStyle = 'brown';
+                ctx.fill();
+            }
+
+            function drawRose(x, y) {
+                ctx.fillStyle = 'red';
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                ctx.fill();
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i * 2 * Math.PI) / 5;
+                    drawPetal(x + Math.cos(angle) * 5, y + Math.sin(angle) * 5, angle, 'red');
+                }
+                ctx.beginPath();
+                ctx.arc(x, y, 2, 0, 2 * Math.PI);
+                ctx.fillStyle = 'black';
+                ctx.fill();
+            }
+
+            function drawTulip(x, y) {
+                ctx.fillStyle = 'pink';
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.bezierCurveTo(x - 5, y - 10, x + 5, y - 10, x, y);
+                ctx.bezierCurveTo(x - 5, y - 5, x + 5, y - 5, x, y);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x, y + 10);
+                ctx.strokeStyle = 'green';
+                ctx.stroke();
+            }
+
+            for (let i = 0; i < flowerCount; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const flowerType = i % 3;
+                if (flowerType === 0) {
+                    drawSunflower(x, y);
+                } else if (flowerType === 1) {
+                    drawRose(x, y);
+                } else {
+                    drawSunflower(x, y);
+                }
+            }
+        }
+
+        function accept() {
+            document.getElementById('accept-modal').style.display = 'block';
+        }
+
+        function decline() {
+            document.getElementById('decline-message').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('accept-modal').style.display = 'none';
+        }
+
+        window.onload = drawFlowers;
+    </script>
+</body>
+</html>
